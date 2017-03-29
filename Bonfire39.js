@@ -1,32 +1,22 @@
-
-function sym(args) {
-    var arrayA = args.filter(removeDuplicatesWithinArray);
-    loopThroughAllArguments(arguments, arrayA);
-    return arrayA.sort();
+function sym(firstArray) {
+    var masterArray = firstArray.filter(removeDuplicatesWithinArray);
+    return loopThroughAllArguments(arguments, masterArray).sort();
 }
-
-function checkAndRemoveDuplicatesBetweenArrays(removeDupesBetweenArraysCounter, arrayB, arrayA) {
-    for (var i = 0; i < removeDupesBetweenArraysCounter; i++) {
-        var checkIt = new RegExp(arrayB[i]);
-        var trueIfDuplicate = checkIt.test(arrayA);
-        if (trueIfDuplicate) {
-            var removeIt = arrayA.indexOf(arrayB[i]);
-            arrayA.splice(removeIt, 1);
-        }
-        else {
-            arrayA.push(arrayB[i]);
-        }
+function removeDuplicatesWithinArray(item, index, inputArray) {
+    return inputArray.indexOf(item) === index;
+}
+function loopThroughAllArguments(totalArguments, masterArray) {
+    for (var i = 1; i < totalArguments.length; i++) {
+        var currentArray = totalArguments[i].filter(removeDuplicatesWithinArray);
+        masterArray = shouldRemoveDuplicatesBetweenArrays(currentArray, masterArray);
     }
-    return arrayA;
+    return masterArray;
+}
+function shouldRemoveDuplicatesBetweenArrays(currentArray, masterArray) {
+    masterArray = masterArray.concat(currentArray).filter(shouldFilterOutDuplicates);
+    return masterArray;
 }
 
-function removeDuplicatesWithinArray (item, index, inputArray){
-    return inputArray.indexOf(item) == index;
-}
-function loopThroughAllArguments(totalArguments, arrayA){
-    for (var counter = 1; counter < totalArguments.length; counter++) {
-        var arrayB = totalArguments[counter].filter(removeDuplicatesWithinArray);
-        var removeDupesBetweenArraysCounter = arrayB.length;
-        arrayA = checkAndRemoveDuplicatesBetweenArrays(removeDupesBetweenArraysCounter, arrayB, arrayA);
-    }
+function shouldFilterOutDuplicates(iHaveToHaveSomethingHereOrItDoesNotWorkButDontKnowWhy, item, inputArray) {
+    return inputArray.lastIndexOf(inputArray[item]) === inputArray.indexOf(inputArray[item]);
 }
